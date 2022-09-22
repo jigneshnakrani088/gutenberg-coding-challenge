@@ -7,6 +7,11 @@
 	"category": "widgets",
 	"icon": "admin-site",
 	"description": "Block rendering a card with country information.",
+	"keywords": [
+		"Country",
+		"Card",
+		"Country Card"
+	],
 	"supports": {
 		"align": true
 	},
@@ -14,36 +19,50 @@
 		"countryCode": {
 			"type": "string",
 			"source": "html",
-			"selector": ".xwp-country-card__country-code"
+			"selector": ".x-block-country-card-preview__country-code"
 		},
 		"relatedPosts": {
 			"type": "array",
 			"source": "query",
-			"selector": ".related-post",
+			"selector": ".x-block-country-card-preview__related-post",
 			"query": {
 				"title": {
 					"type": "string",
-					"selector": ".title",
+					"selector": ".x-block-country-card-preview__related-post--title",
 					"source": "text"
 				},
 				"excerpt": {
 					"type": "string",
-					"selector": ".excerpt",
+					"selector": ".x-block-country-card-preview__related-post--excerpt",
 					"source": "text"
 				},
 				"link": {
 					"type": "string",
-					"selector": ".link",
+					"selector": ".x-block-country-card-preview__related-post--link",
 					"source": "attribute",
 					"attribute": "href"
 				},
 				"id": {
 					"type": "string",
-					"selector": ".link",
+					"selector": ".x-block-country-card-preview__related-post--link",
 					"source": "attribute",
 					"attribute": "data-post-id"
 				}
 			}
+		}
+	},
+	"example": {
+		"attributes": {
+
+			"countryCode": "IN",
+			"relatedPosts": [
+				{
+					"title": "Luctus accumsan tortor",
+					"excerpt": "Lorem India ipsum dolor sit amet, consectetur adipiscing elit.",
+					"link": "https://example.com",
+					"id": "123"
+				}
+			]
 		}
 	},
 	"textdomain": "xwp-country-card",
