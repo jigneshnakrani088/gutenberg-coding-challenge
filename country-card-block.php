@@ -4,8 +4,10 @@
  * Description:       Block rendering a card with country information.
  * Requires at least: 5.8
  * Requires PHP:      5.6
- * Version:           1.0.0
+ * Version:           1.0.1
  * Author:            XWP
+ * License:           GPLv2+
+ * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
  * Author URI:        https://github.com/xwp
  * Text Domain:       xwp-country-card
  *
@@ -49,7 +51,7 @@ add_action( 'init', __NAMESPACE__ . '\\disable_emojis' );
  * @return array Difference between the two arrays.
  */
 function remove_emoji_dns_prefetch( $urls, $relation_type ) {
-	if ( 'dns-prefetch' == $relation_type ) {
+	if ( 'dns-prefetch' === $relation_type ) {
 		/** This filter is documented in wp-includes/formatting.php */
 		$emoji_svg_url = apply_filters( 'emoji_svg_url', 'https://s.w.org/images/core/emoji/2/svg/' );
 
