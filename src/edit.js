@@ -8,6 +8,7 @@ import {
 	Placeholder,
 	ToolbarButton,
 	ToolbarGroup,
+	Spinner,
 } from '@wordpress/components';
 import { useEffect, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
@@ -35,13 +36,14 @@ const OPTIONS = Object.entries( countries ).map( ( [ code, name ] ) => ( {
  * @return {JSX.Element} Block element.
  */
 export default function Edit( props ) {
-	const { attributes, setAttributes, isSelected } = props;
+	const { attributes, setAttributes } = props;
 	const { countryCode, relatedPosts } = attributes;
-
-	const [ isPreview, setPreview ] = useState( ! isSelected );
+	const [ isPreview, setPreview ] = useState( !! countryCode );
+	const [ isLoading, setIsLoading ] = useState( ! countryCode );
 
 	const handleChangeCountryCode = ( newCountryCode ) => {
 		if ( countryCode !== newCountryCode ) {
+			setIsLoading( true );
 			setAttributes( {
 				countryCode: newCountryCode,
 				relatedPosts: [],
@@ -49,7 +51,11 @@ export default function Edit( props ) {
 		}
 	};
 
-	const { fetchedRelatedPosts, fetchedRelatedPostsCount } = useSelect( ( select ) => {
+	const { fetchedRelatedPosts, fetchedRelatedPostsContent } = useSelect( ( select ) => {
+		if ( ! countryCode ) {
+			return {};
+		}
+
 		const queryParams = {
 			per_page: 10,
 			status: 'publish',
@@ -58,26 +64,35 @@ export default function Edit( props ) {
 			exclude: wp.data.select( 'core/editor' ).getCurrentPostId(),
 		};
 
-		const posts = select( 'core' ).getEntityRecords( 'postType', 'post', queryParams );
+		const posts = select( 'core' ).getEntityRecords(
+			'postType',
+			'post',
+			queryParams
+		);
 		if ( null !== posts ) {
+			const fetchedPosts = posts?.map( ( relatedPost ) => ( {
+				id: relatedPost.id,
+				link: relatedPost.link,
+				title: relatedPost.title?.rendered || '',
+				excerpt: relatedPost.excerpt?.raw || '',
+			} ) );
+
+			setIsLoading( false );
 			return {
-				fetchedRelatedPostsCount: posts.length,
-				fetchedRelatedPosts: posts?.map( ( relatedPost ) => ( {
-					id: relatedPost.id,
-					link: relatedPost.link,
-					title: relatedPost.title?.rendered || '',
-					excerpt: relatedPost.excerpt?.raw || '',
-				} ) ),
+				fetchedRelatedPosts: fetchedPosts,
+				fetchedRelatedPostsContent: JSON.stringify(
+					fetchedPosts
+				),
 			};
 		}
 	}, [ countryCode ] ) || [];
 
 	useEffect( () => {
 		setAttributes( { relatedPosts: fetchedRelatedPosts } );
-	}, [ fetchedRelatedPostsCount, setAttributes ] );
+	}, [ fetchedRelatedPostsContent ] );
 
 	useEffect( () => {
-		setPreview( countryCode );
+		setPreview( !! countryCode );
 	}, [ countryCode ] );
 
 	const handleChangeCountry = () => {
@@ -90,6 +105,19 @@ export default function Edit( props ) {
 	const blockProps = useBlockProps( {
 		className: CLASSNAME,
 	} );
+
+	if ( isLoading ) {
+		return (
+			<div { ...blockProps }>
+				<Placeholder
+					icon={ globe }
+					label={ __( 'Fetching Posts…', 'xwp-country-card' ) }
+				>
+					<Spinner />
+				</Placeholder>
+			</div>
+		);
+	}
 
 	return (
 		<>
@@ -114,7 +142,10 @@ export default function Edit( props ) {
 						icon={ globe }
 						label={ __( 'XWP Country Card', 'xwp-country-card' ) }
 						isColumnLayout={ true }
-						instructions={ __( 'Type in a name of a country you want to display on you site.', 'xwp-country-card' ) }
+						instructions={ __(
+							'Type in a name of a country you want to display on your site.',
+							'xwp-country-card'
+						) }
 					>
 						<ComboboxControl
 							label={ __( 'Country', 'xwp-country-card' ) }

@@ -37,26 +37,26 @@ export default function Preview( { countryCode, relatedPosts } ) {
 				</div>
 			</div>
 			<h2 className={ `${ CLASSNAME }__heading` }>
-				<p
-					dangerouslySetInnerHTML={ { __html: previewHeading } }
-				/>
+				<p dangerouslySetInnerHTML={ { __html: previewHeading } } />
 			</h2>
 			<div className={ `${ CLASSNAME }__related-posts` }>
 				<h3 className={ `${ CLASSNAME }__related-posts--heading` }>
-					{ hasRelatedPosts ? (
-						sprintf(
-							/** translators: %d is Country related posts count */
-							_n(
-								'There is only %d related post.',
-								'There are %d related posts.',
-								relatedPosts.length,
-								'xwp-country-card'
-							),
-							relatedPosts.length
+					{ hasRelatedPosts
+						? (
+							sprintf(
+								/** translators: %d is Country related posts count */
+								_n(
+									'There is only %d related post:',
+									'There are %d related posts:',
+									relatedPosts.length,
+									'xwp-country-card'
+								),
+								relatedPosts.length
+							)
+						) : (
+							__( 'There are no related posts.', 'xwp-country-card' )
 						)
-					) : (
-						__( 'There are no related posts.', 'xwp-country-card' )
-					) }
+					}
 				</h3>
 				{ hasRelatedPosts && (
 					<ul className={ `${ CLASSNAME }__related-posts--lists` }>

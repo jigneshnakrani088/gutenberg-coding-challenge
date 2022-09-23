@@ -1,4 +1,6 @@
 .x-block-country-card .x-block-country-card-preview {
+	$this: '.x-block-country-card-preview';
+
 	border: 1px solid #dcdcde;
 	box-shadow: 0 1px 1px rgba(#000, 0.05);
 
@@ -41,6 +43,10 @@
 		p {
 			margin: 0;
 		}
+
+		#{$this}__country-code {
+			text-decoration: underline dotted;
+		}
 	}
 
 	&__related-posts {
@@ -61,7 +67,7 @@
 	}
 
 	&__related-post {
-		padding: 0.75rem 0 0.75rem 1.5rem;
+		padding: 0.75rem;
 		border-top: 1px solid #dcdcde;
 
 		&--title {
@@ -71,13 +77,24 @@
 
 		&--excerpt {
 			margin: 0;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+			overflow: hidden;
 		}
 
 		&--link {
 			text-decoration: none;
+			color: black;
 
 			&:hover {
-				text-decoration: underline;
+
+				#{$this}__related-post--title {
+					text-decoration: underline;
+				}
+
+				#{$this}__related-post--excerpt {
+					text-decoration: none;
+				}
 			}
 		}
 	}
